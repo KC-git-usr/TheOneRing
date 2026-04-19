@@ -39,3 +39,19 @@
 
 # debug information files
 *.dwo
+
+# CMake build tree
+build/
+install/
+
+# LLVM coverage artefacts
+*.profraw
+*.profdata
+coverage/
+
+# Doxygen output
+docs/
+
+# IDE / editor
+.cache/
+.idea/

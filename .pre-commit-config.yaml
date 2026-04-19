@@ -1,0 +1,71 @@
+# .pre-commit-config.yaml
+#
+# Pre-commit hooks for The One Ring.
+# Install once:  pip install pre-commit && pre-commit install
+# Run manually:  pre-commit run --all-files
+#
+# Requires system tools: clang-format, clang-tidy, cpplint
+#   sudo apt install clang-format clang-tidy
+#   pip install cpplint
+#
+# NOTE: The clang-tidy hook requires a compilation database (build/compile_commands.json).
+#   Build at least once with:  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S the_one_ring -B build
+#   before running clang-tidy via pre-commit.
+
+repos:
+  # ── General file hygiene ────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--unsafe]  # Allow custom YAML tags (e.g. in ROS 2 files)
+      - id: check-added-large-files
+        args: [--maxkb=512]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-merge-conflict
+
+  # ── clang-format (uses .clang-format in repo root) ──────────────────────────
+  # Uses the system clang-format so the version matches your toolchain.
+  - repo: local
+    hooks:
+      - id: clang-format
+        name: clang-format
+        language: system
+        entry: clang-format
+        args:
+          - --style=file      # Reads .clang-format from the repo root
+          - --dry-run         # Don't write — just report violations
+          - --Werror          # Non-zero exit on any formatting diff
+        types_or: [c++, c]
+        files: \.(cpp|cxx|cc|c|h|hpp|hxx)$
+
+  # ── clang-tidy (uses .clang-tidy in repo root) ──────────────────────────────
+  # Uses the compilation database at build/compile_commands.json.
+  # Only runs on .cpp files (clang-tidy resolves headers through them).
+      - id: clang-tidy
+        name: clang-tidy
+        language: system
+        entry: clang-tidy
+        args:
+          - -p
+          - build   # Path to directory containing compile_commands.json
+        types: [c++]
+        files: \.(cpp|cxx|cc)$
+        pass_filenames: true
+
+  # ── cpplint (Google C++ Style Guide linter) ─────────────────────────────────
+  - repo: https://github.com/cpplint/cpplint
+    rev: 2.0.0
+    hooks:
+      - id: cpplint
+        args:
+          # build/include_subdir: allow headers without matching subdir guard
+          # legal/copyright: copyright header not enforced at hook level
+          - --filter=-build/include_subdir,-legal/copyright
+          - --linelength=100
+          - --counting=detailed
+        types_or: [c++]
+        files: \.(cpp|cxx|cc|h|hpp)$

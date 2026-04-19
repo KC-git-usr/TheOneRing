@@ -1,0 +1,91 @@
+---
+# clang-tidy configuration — Google C++ Style + safety/performance checks
+# Reference: https://clang.llvm.org/extra/clang-tidy/checks/list.html
+#
+# Run manually:   clang-tidy -p build src/my_file.cpp
+# Run via CMake:  cmake -DENABLE_CLANG_TIDY=ON ..  (runs on every compile)
+
+# All checks on; selectively disable the ones that conflict with project style
+# or are too noisy for practical use.
+Checks: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,concurrency-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-avoid-non-const-global-variables,google-*,misc-*,-misc-non-private-member-variables-in-classes,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,-readability-identifier-length'
+
+# All enabled checks are errors (no warnings-only lane).
+WarningsAsErrors: '*'
+
+# Analyse headers inside include/ and src/ of this package.
+HeaderFilterRegex: '.*(include|src)/.*\.(h|hpp)$'
+
+CheckOptions:
+  # ── Naming conventions (Google C++ Style Guide) ─────────────────────────────
+  # Namespaces: snake_case
+  - key: readability-identifier-naming.NamespaceCase
+    value: lower_case
+
+  # Types: PascalCase
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.UnionCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeAliasCase
+    value: CamelCase
+  - key: readability-identifier-naming.TemplateParameterCase
+    value: CamelCase
+  - key: readability-identifier-naming.TypeTemplateParameterCase
+    value: CamelCase
+
+  # Functions / methods: snake_case
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
+  - key: readability-identifier-naming.MethodCase
+    value: lower_case
+
+  # Variables / parameters: snake_case
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+  - key: readability-identifier-naming.LocalVariableCase
+    value: lower_case
+
+  # Class members: snake_case with trailing underscore for private/protected
+  - key: readability-identifier-naming.ClassMemberCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: '_'
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: '_'
+
+  # Constants: UPPER_CASE
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.ConstexprVariableCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.StaticConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+
+  # Macros: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+
+  # ── Misc check tuning ───────────────────────────────────────────────────────
+  # Allow a class with only a defaulted destructor (common in real-time wrappers)
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: 'true'
+
+  # Require braces only when the if/else body spans > 1 line
+  - key: google-readability-braces-around-statements.ShortStatementLines
+    value: '1'
+
+  # Prefer brace initialisation for member defaults where it reads clearly
+  - key: modernize-use-default-member-init.UseAssignment
+    value: 'false'
+
+  # Minimum function length before suggesting extraction (keep low for RT code)
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '25'

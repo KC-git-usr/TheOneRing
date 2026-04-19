@@ -1,0 +1,100 @@
+---
+# Google C++ Style Guide — clang-format configuration
+# Reference: https://google.github.io/styleguide/cppguide.html
+# Deviations from upstream Google style:
+#   - ColumnLimit raised to 100 (matches cpplint --linelength=100)
+#   - C++20 standard
+
+Language: Cpp
+BasedOnStyle: Google
+Standard: c++20
+
+# ── Layout ────────────────────────────────────────────────────────────────────
+ColumnLimit: 100
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+
+# ── Brace / statement style ───────────────────────────────────────────────────
+BreakBeforeBraces: Attach
+AccessModifierOffset: -1
+IndentCaseLabels: true
+NamespaceIndentation: None
+FixNamespaceComments: true
+
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLambdasOnASingleLine: All
+AllowShortLoopsOnASingleLine: false
+
+# ── Line breaking ─────────────────────────────────────────────────────────────
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+BreakBeforeBinaryOperators: None
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+BreakStringLiterals: true
+
+# ── Alignment ─────────────────────────────────────────────────────────────────
+AlignAfterOpenBracket: Align
+AlignConsecutiveMacros: false
+AlignConsecutiveAssignments: false
+AlignOperands: Align
+AlignTrailingComments: true
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# ── Argument / parameter packing ─────────────────────────────────────────────
+BinPackArguments: true
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# ── Includes ──────────────────────────────────────────────────────────────────
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  # 1. Related header (same base name) — handled implicitly by clang-format
+  # 2. C system headers
+  - Regex:    '^<[a-z_]+\.h>$'
+    Priority: 1
+  # 3. C++ standard library
+  - Regex:    '^<[a-z]'
+    Priority: 2
+  # 4. Everything else (project headers)
+  - Regex:    '.*'
+    Priority: 3
+
+# ── Spacing ───────────────────────────────────────────────────────────────────
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: true
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyBlock: false
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: Never
+SpacesInConditionalStatement: false
+SpacesInContainerLiterals: true
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# ── Miscellaneous ─────────────────────────────────────────────────────────────
+Cpp11BracedListStyle: true
+ReflowComments: true
+SortUsingDeclarations: true
+CompactNamespaces: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
