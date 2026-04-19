@@ -1,9 +1,13 @@
+# cmake-format: off
 # cmake/Doxygen.cmake
 #
-# Doxygen documentation generation. Enable with -DENABLE_DOXYGEN=ON.
+# Doxygen documentation generation.
+# Enable with -DENABLE_DOXYGEN=ON.
 #
-# Produces HTML docs in <build>/docs/html/index.html. Requires: doxygen, graphviz (for call graphs).
+# Produces HTML docs in <build>/docs/html/index.html.
+# Requires: doxygen, graphviz (for call graphs).
 # Install:  sudo apt install doxygen graphviz
+# cmake-format: on
 
 include_guard(GLOBAL)
 

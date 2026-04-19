@@ -1,19 +1,29 @@
+# cmake-format: off
 # cmake/Sanitizers.cmake
 #
 # Clang sanitizer support.  All are off by default and toggled via -D flags.
 #
-# Available flags: -DENABLE_ASAN=ON    AddressSanitizer          — heap/stack/global memory errors
-# -DENABLE_UBSAN=ON   UndefinedBehaviorSanitizer — signed overflow, bad casts, etc. -DENABLE_TSAN=ON
-# ThreadSanitizer            — data races -DENABLE_RTSAN=ON   RealtimeSanitizer          — RT-unsafe
-# calls in [[clang::nonblocking]] functions (Clang 18+)
+# Available flags:
+#   -DENABLE_ASAN=ON    AddressSanitizer          — heap/stack/global memory errors
+#   -DENABLE_UBSAN=ON   UndefinedBehaviorSanitizer — signed overflow, bad casts, etc.
+#   -DENABLE_TSAN=ON    ThreadSanitizer            — data races
+#   -DENABLE_RTSAN=ON   RealtimeSanitizer          — RT-unsafe calls in [[clang::nonblocking]]
+#                                                    functions (Clang 18+)
 #
-# RTSan usage: Mark your real-time functions with [[clang::nonblocking]]. RTSan will abort at
-# runtime when those functions perform: - heap allocation (malloc / new) - locking (mutex, futex) -
-# blocking syscalls (read, write, sleep, ...) Example: void rt_cycle() [[clang::nonblocking]] { //
-# RTSan watches everything called from here }
+# RTSan usage:
+#   Mark your real-time functions with [[clang::nonblocking]].
+#   RTSan will abort at runtime when those functions perform:
+#     - heap allocation (malloc / new)
+#     - locking (mutex, futex)
+#     - blocking syscalls (read, write, sleep, ...)
+#   Example:
+#     void rt_cycle() [[clang::nonblocking]] {
+#       // RTSan watches everything called from here
+#     }
 #
-# For best stack traces set ASAN_SYMBOLIZER_PATH / UBSAN_SYMBOLIZER_PATH to the path of
-# llvm-symbolizer before running the binary.
+# For best stack traces set ASAN_SYMBOLIZER_PATH / UBSAN_SYMBOLIZER_PATH to
+# the path of llvm-symbolizer before running the binary.
+# cmake-format: on
 
 include_guard(GLOBAL)
 

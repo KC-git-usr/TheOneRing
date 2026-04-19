@@ -1,14 +1,19 @@
+# cmake-format: off
 # cmake/CodeCoverage.cmake
 #
-# LLVM source-based code coverage (not gcov). Enable with -DENABLE_COVERAGE=ON.
+# LLVM source-based code coverage (not gcov).
+# Enable with -DENABLE_COVERAGE=ON.
 #
-# Workflow: 1.  cmake -DENABLE_COVERAGE=ON -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug .. 2.  cmake
-# --build . 3.  LLVM_PROFILE_FILE=default.profraw ctest --output-on-failure 4.  cmake --build .
-# --target coverage-html   # opens build/coverage/html/index.html cmake --build . --target
-# coverage-summary # prints per-file % to stdout
+# Workflow:
+#   1.  cmake -DENABLE_COVERAGE=ON -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug ..
+#   2.  cmake --build .
+#   3.  LLVM_PROFILE_FILE=default.profraw ctest --output-on-failure
+#   4.  cmake --build . --target coverage-html   # opens build/coverage/html/index.html
+#       cmake --build . --target coverage-summary # prints per-file % to stdout
 #
-# Requires: llvm-profdata, llvm-cov (same major version as your clang). Install:  sudo apt install
-# llvm
+# Requires: llvm-profdata, llvm-cov (same major version as your clang).
+# Install:  sudo apt install llvm
+# cmake-format: on
 
 include_guard(GLOBAL)
 
