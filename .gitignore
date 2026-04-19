@@ -42,6 +42,8 @@
 
 # CMake build tree
 build/
+build-*/
+cmake-build-*/
 install/
 
 # LLVM coverage artefacts

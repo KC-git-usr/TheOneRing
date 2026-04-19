@@ -34,20 +34,130 @@ stress-ng --matrix 0 -t 1h
 # stress-ng heats up the CPU a lot, so run it for 1hr, let it cool for say 30min, and run it again manually
 ```
 
-## Compiling and running the application
+## Compiling and Running the Application
 
-Option #1: good old cmake
+### Option #1: Good Old CMake
+
+> **This project requires Clang.** If Clang is not your default compiler, prefix every
+> `cmake` configure command with `CC=clang CXX=clang++`.
+> Always use separate build directories for sanitizer/coverage variants — they are incompatible with each other.
+
+**Basic Debug Build:**
+```bash
+cd the_one_ring
+
+# Modern out-of-source build (cmake creates the build/ directory automatically)
+CC=clang CXX=clang++ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j$(nproc)
+sudo ./build/the_one_ring
+
+# Or equivalently, the traditional way:
+# mkdir build && cd build
+# CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug ..
+# cmake --build . -j$(nproc)
+# sudo ./the_one_ring
 ```
-* cd <root_cmakelists>
-* mkdir build && cd build
-* cmake -S ../.
-* cmake --build .
-* sudo su
-* ./the_one_ring
+
+**With Sanitizers (ASan + UBSan):**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build-asan \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_ASAN=ON \
+  -DENABLE_UBSAN=ON
+cmake --build build-asan -j$(nproc)
 ```
-Option #2: using colcon
+
+**With ThreadSanitizer** (separate build — can't mix with ASan):
+```bash
+CC=clang CXX=clang++ cmake -S . -B build-tsan \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_TSAN=ON
+cmake --build build-tsan -j$(nproc)
 ```
-* cd <your_workspace>
-* colcon build --packages-select the_one_ring
-* cd install/the_one_ring
+
+**With RealtimeSanitizer:**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build-rtsan \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_RTSAN=ON
+cmake --build build-rtsan -j$(nproc)
+```
+
+**With Tests:**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DBUILD_TESTING=ON
+cmake --build build -j$(nproc)
+cd build && ctest --output-on-failure
+```
+
+**With Code Coverage:**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build-cov \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DBUILD_TESTING=ON \
+  -DENABLE_COVERAGE=ON
+cmake --build build-cov -j$(nproc)
+cd build-cov && LLVM_PROFILE_FILE=$(pwd)/default.profraw ctest --output-on-failure
+cmake --build . --target coverage-html    # browse coverage/html/index.html
+cmake --build . --target coverage-summary # prints per-file % to stdout
+```
+
+**With Static Analysis:**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DENABLE_CLANG_TIDY=ON \
+  -DENABLE_CPPCHECK=ON
+cmake --build build -j$(nproc)
+```
+
+**Release Build:**
+```bash
+CC=clang CXX=clang++ cmake -S . -B build-release -DCMAKE_BUILD_TYPE=Release
+cmake --build build-release -j$(nproc)
+```
+
+
+### Option #2: Using Colcon
+
+Colcon discovers the package via `package.xml`. Your workspace should look like:
+```
+code_ws/
+  src/
+    TheOneRing/
+      the_one_ring/
+        CMakeLists.txt
+        package.xml
+        src/
+        ...
+```
+
+**Basic Build:**
+```bash
+cd ~/code_ws
+CC=clang CXX=clang++ colcon build --packages-select the_one_ring
+```
+
+**With CMake Args** (sanitizers, tests, etc.):
+```bash
+CC=clang CXX=clang++ colcon build --packages-select the_one_ring \
+  --cmake-args \
+    -DCMAKE_BUILD_TYPE=Debug \
+    -DENABLE_ASAN=ON \
+    -DENABLE_UBSAN=ON \
+    -DBUILD_TESTING=ON
+```
+
+**Run the binary:**
+```bash
+source install/setup.bash
+sudo ./install/the_one_ring/lib/the_one_ring/the_one_ring
+```
+
+**Run tests (if built with `-DBUILD_TESTING=ON`):**
+```bash
+colcon test --packages-select the_one_ring
+colcon test-result --verbose
 ```

@@ -1,6 +1,6 @@
 find_package(GTest REQUIRED)
 
-file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "*.cpp")
+file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "*.cpp" "*.cc")
 
 if(NOT TEST_SOURCES)
   message(STATUS "No test sources found in tests/ — skipping test target.")

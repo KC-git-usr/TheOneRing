@@ -5,10 +5,10 @@
 # Enable with -DENABLE_COVERAGE=ON.
 #
 # Workflow:
-#   1.  cmake -DENABLE_COVERAGE=ON -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug ..
-#   2.  cmake --build .
-#   3.  LLVM_PROFILE_FILE=default.profraw ctest --output-on-failure
-#   4.  cmake --build . --target coverage-html   # opens build/coverage/html/index.html
+#   1.  cmake -DENABLE_COVERAGE=ON -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug -S . -B build-cov
+#   2.  cmake --build build-cov
+#   3.  cd build-cov && LLVM_PROFILE_FILE=$(pwd)/default.profraw ctest --output-on-failure
+#   4.  cmake --build . --target coverage-html   # browse coverage/html/index.html
 #       cmake --build . --target coverage-summary # prints per-file % to stdout
 #
 # Requires: llvm-profdata, llvm-cov (same major version as your clang).
@@ -46,12 +46,13 @@ function(setup_coverage_targets test_executable)
 
   find_program(
     LLVM_PROFDATA_EXE
-    NAMES llvm-profdata
+    NAMES llvm-profdata llvm-profdata-22 llvm-profdata-21 llvm-profdata-20 llvm-profdata-19
+          llvm-profdata-18
     DOC "llvm-profdata (part of the LLVM toolchain)"
   )
   find_program(
     LLVM_COV_EXE
-    NAMES llvm-cov
+    NAMES llvm-cov llvm-cov-22 llvm-cov-21 llvm-cov-20 llvm-cov-19 llvm-cov-18
     DOC "llvm-cov (part of the LLVM toolchain)"
   )
 
@@ -64,14 +65,14 @@ function(setup_coverage_targets test_executable)
 
   set(COV_DIR "${CMAKE_BINARY_DIR}/coverage")
   set(PROFDATA_FILE "${COV_DIR}/coverage.profdata")
+  set(PROFRAW_FILE "${CMAKE_BINARY_DIR}/default.profraw")
 
-  # Step 1: merge all .profraw files into a single .profdata
+  # Step 1: merge .profraw into .profdata
   add_custom_target(
     coverage-merge
-    COMMAND ${CMAKE_COMMAND} -E make_directory "${COV_DIR}"
-    COMMAND ${LLVM_PROFDATA_EXE} merge --sparse "${CMAKE_BINARY_DIR}/default.profraw" -o
-            "${PROFDATA_FILE}"
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${COV_DIR}
+    COMMAND ${LLVM_PROFDATA_EXE} merge --sparse ${PROFRAW_FILE} -o ${PROFDATA_FILE}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Merging raw coverage profiles → ${PROFDATA_FILE}"
     VERBATIM
   )
@@ -80,9 +81,9 @@ function(setup_coverage_targets test_executable)
   add_custom_target(
     coverage-html
     COMMAND
-      ${LLVM_COV_EXE} show $<TARGET_FILE:${test_executable}> --instr-profile="${PROFDATA_FILE}"
-      --format=html --output-dir="${COV_DIR}/html" --show-line-counts-or-regions --show-expansions
-      --ignore-filename-regex=".*/tests/.*" --ignore-filename-regex=".*/googletest/.*"
+      ${LLVM_COV_EXE} show $<TARGET_FILE:${test_executable}> --instr-profile=${PROFDATA_FILE}
+      --format=html --output-dir=${COV_DIR}/html --show-line-counts-or-regions --show-expansions
+      --ignore-filename-regex=.*/tests/.* --ignore-filename-regex=.*/googletest/.*
     DEPENDS coverage-merge
     COMMENT "HTML coverage report → ${COV_DIR}/html/index.html"
     VERBATIM
@@ -92,8 +93,8 @@ function(setup_coverage_targets test_executable)
   add_custom_target(
     coverage-summary
     COMMAND
-      ${LLVM_COV_EXE} report $<TARGET_FILE:${test_executable}> --instr-profile="${PROFDATA_FILE}"
-      --ignore-filename-regex=".*/tests/.*" --ignore-filename-regex=".*/googletest/.*"
+      ${LLVM_COV_EXE} report $<TARGET_FILE:${test_executable}> --instr-profile=${PROFDATA_FILE}
+      --ignore-filename-regex=.*/tests/.* --ignore-filename-regex=.*/googletest/.*
     DEPENDS coverage-merge
     COMMENT "Coverage summary"
     VERBATIM

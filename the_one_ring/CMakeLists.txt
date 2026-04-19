@@ -16,16 +16,20 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # ── Module path ───────────────────────────────────────────────────────────────
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# ── Compiler guard ──────────────────────────────────────────────────────────── RTSan, LLVM
-# coverage, and several warning flags are Clang-specific.
+# cmake-format: off
+# ── Compiler guard ────────────────────────────────────────────────────────────
+# RTSan, LLVM coverage, and several warning flags are Clang-specific.
+# cmake-format: on
 if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   message(FATAL_ERROR "This project requires Clang (detected: ${CMAKE_CXX_COMPILER_ID}). "
                       "Re-run with CC=clang CXX=clang++."
   )
 endif()
 
-# ── Feature options ─────────────────────────────────────────────────────────── Sanitizers
-# (mutually exclusive combinations are validated in Sanitizers.cmake)
+# cmake-format: off
+# ── Feature options ───────────────────────────────────────────────────────────
+# Sanitizers (mutually exclusive combinations are validated in Sanitizers.cmake)
+# cmake-format: on
 option(ENABLE_ASAN "AddressSanitizer" OFF)
 option(ENABLE_UBSAN "UndefinedBehaviorSanitizer" OFF)
 option(ENABLE_TSAN "ThreadSanitizer" OFF)
@@ -62,16 +66,23 @@ add_compile_options(
   -fno-omit-frame-pointer # Retain frame pointers for stack traces / profiling
 )
 
-# ── Sanitizers ──────────────────────────────────────────────────────────────── RTSan usage:
-# annotate real-time functions with [[clang::nonblocking]]. RTSan will abort at runtime if those
-# functions perform blocking syscalls, heap allocation, or any other real-time-unsafe operation.
+# cmake-format: off
+# ── Sanitizers ────────────────────────────────────────────────────────────────
+# RTSan usage: annotate real-time functions with [[clang::nonblocking]].
+# RTSan will abort at runtime if those functions perform blocking syscalls,
+# heap allocation, or any other real-time-unsafe operation.
+# cmake-format: on
 include(Sanitizers)
 validate_sanitizer_combinations()
 
-# ── Code coverage ───────────────────────────────────────────────────────────── Uses llvm-profdata
-# + llvm-cov (LLVM source-based, not gcov). Workflow:  cmake -DENABLE_COVERAGE=ON .. cmake --build .
-# --target the_one_ring_tests LLVM_PROFILE_FILE=default.profraw ./the_one_ring_tests cmake --build .
-# --target coverage-html
+# cmake-format: off
+# ── Code coverage ─────────────────────────────────────────────────────────────
+# Uses llvm-profdata + llvm-cov (LLVM source-based, not gcov).
+# Workflow:  cmake -DENABLE_COVERAGE=ON ..
+#            cmake --build . --target the_one_ring_tests
+#            LLVM_PROFILE_FILE=default.profraw ./the_one_ring_tests
+#            cmake --build . --target coverage-html
+# cmake-format: on
 include(CodeCoverage)
 
 # ── Static analysis ───────────────────────────────────────────────────────────
@@ -125,6 +136,8 @@ if(SOURCES)
   apply_sanitizers(${PROJECT_NAME})
   # Coverage is applied to the test binary in tests/CMakeLists.txt. The main RT executable runs
   # indefinitely and is not amenable to profiling.
+
+  install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 else()
   message(STATUS "No .cpp files found in src/ — skipping executable target.")
 endif()
@@ -147,10 +160,12 @@ file(
   ALL_CXX_FILES
   CONFIGURE_DEPENDS
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h"
   "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
   "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h"
 )
 
