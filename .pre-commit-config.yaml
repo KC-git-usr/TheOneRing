@@ -30,6 +30,7 @@ repos:
 
   # ── clang-format (uses .clang-format in repo root) ──────────────────────────
   # Uses the system clang-format so the version matches your toolchain.
+  # Auto-fixes formatting in-place; git diff will show what changed.
   - repo: local
     hooks:
       - id: clang-format
@@ -38,21 +39,20 @@ repos:
         entry: clang-format
         args:
           - --style=file      # Reads .clang-format from the repo root
-          - --dry-run         # Don't write — just report violations
-          - --Werror          # Non-zero exit on any formatting diff
+          - -i                # Fix in-place (auto-format)
         types_or: [c++, c]
         files: \.(cpp|cxx|cc|c|h|hpp|hxx)$
 
   # ── clang-tidy (uses .clang-tidy in repo root) ──────────────────────────────
-  # Uses the compilation database at build/compile_commands.json.
-  # Only runs on .cpp files (clang-tidy resolves headers through them).
+  # Uses the compilation database at the_one_ring/build/compile_commands.json.
+  # Only runs on .cpp/.cc files (clang-tidy resolves headers through them).
       - id: clang-tidy
         name: clang-tidy
         language: system
         entry: clang-tidy
         args:
           - -p
-          - build   # Path to directory containing compile_commands.json
+          - the_one_ring/build   # Path to directory containing compile_commands.json
         types: [c++]
         files: \.(cpp|cxx|cc)$
         pass_filenames: true

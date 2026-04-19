@@ -1,6 +1,8 @@
-#include <iostream>
+#include "logger.h"
 
 int main() {
-  std::cout << "Hello, Mellon!" << '\n';
+  tor::logger::CreateLogger();
+
+  spdlog::info("Hello, Mellon!");
   return 0;
 }

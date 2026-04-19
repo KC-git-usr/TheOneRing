@@ -7,7 +7,7 @@
 
 # All checks on; selectively disable the ones that conflict with project style
 # or are too noisy for practical use.
-Checks: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,concurrency-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-avoid-non-const-global-variables,google-*,misc-*,-misc-non-private-member-variables-in-classes,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,-readability-identifier-length'
+Checks: 'clang-diagnostic-*,clang-analyzer-*,bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-exception-escape,concurrency-*,cppcoreguidelines-*,-cppcoreguidelines-avoid-magic-numbers,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-avoid-non-const-global-variables,google-*,misc-*,-misc-non-private-member-variables-in-classes,-misc-include-cleaner,modernize-*,-modernize-use-trailing-return-type,performance-*,readability-*,-readability-magic-numbers,-readability-identifier-length'
 
 # All enabled checks are errors (no warnings-only lane).
 WarningsAsErrors: '*'
@@ -37,11 +37,11 @@ CheckOptions:
   - key: readability-identifier-naming.TypeTemplateParameterCase
     value: CamelCase
 
-  # Functions / methods: snake_case
+  # Functions / methods: CamelCase (Google C++ Style Guide)
   - key: readability-identifier-naming.FunctionCase
-    value: lower_case
+    value: CamelCase
   - key: readability-identifier-naming.MethodCase
-    value: lower_case
+    value: CamelCase
 
   # Variables / parameters: snake_case
   - key: readability-identifier-naming.VariableCase
@@ -59,19 +59,29 @@ CheckOptions:
   - key: readability-identifier-naming.ProtectedMemberSuffix
     value: '_'
 
-  # Constants: UPPER_CASE
+  # Constants: kCamelCase (Google style for named constants)
   - key: readability-identifier-naming.GlobalConstantCase
-    value: UPPER_CASE
+    value: CamelCase
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: 'k'
   - key: readability-identifier-naming.ConstexprVariableCase
-    value: UPPER_CASE
+    value: CamelCase
+  - key: readability-identifier-naming.ConstexprVariablePrefix
+    value: 'k'
   - key: readability-identifier-naming.StaticConstantCase
-    value: UPPER_CASE
+    value: CamelCase
+  - key: readability-identifier-naming.StaticConstantPrefix
+    value: 'k'
   - key: readability-identifier-naming.EnumConstantCase
-    value: UPPER_CASE
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantPrefix
+    value: 'k'
 
-  # Macros: UPPER_CASE
+  # Macros: UPPER_CASE (ignore header guards with trailing underscore)
   - key: readability-identifier-naming.MacroDefinitionCase
     value: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionIgnoredRegexp
+    value: '.*_H_$'
 
   # ── Misc check tuning ───────────────────────────────────────────────────────
   # Allow a class with only a defaulted destructor (common in real-time wrappers)

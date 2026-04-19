@@ -119,6 +119,8 @@ if(ENABLE_CPPCHECK)
 endif()
 
 # ── Main executable ───────────────────────────────────────────────────────────
+find_package(spdlog 1.17 REQUIRED CONFIG)
+
 set(SOURCES src/main.cc)
 
 if(SOURCES)
