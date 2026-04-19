@@ -21,6 +21,7 @@ repos:
       - id: end-of-file-fixer
       - id: check-yaml
         args: [--unsafe]  # Allow custom YAML tags (e.g. in ROS 2 files)
+        additional_dependencies: [pyyaml]
       - id: check-added-large-files
         args: [--maxkb=512]
       - id: mixed-line-ending
@@ -61,7 +62,9 @@ repos:
     rev: v0.6.13
     hooks:
       - id: cmake-format
+        additional_dependencies: [pyyaml]
       - id: cmake-lint
+        additional_dependencies: [pyyaml]
 
   # ── cpplint (Google C++ Style Guide linter) ─────────────────────────────────
   - repo: https://github.com/cpplint/cpplint
