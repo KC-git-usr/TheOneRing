@@ -1,0 +1,26 @@
+# .cmake-format.yaml — cmake-format / cmake-lint configuration
+# Install: pip install cmakelang
+# Usage:   cmake-format -i <file>.cmake
+#          cmake-lint <file>.cmake
+
+format:
+  line_width: 100
+  tab_size: 2
+  use_tabchars: false
+  max_subgroups_hwrap: 2
+  max_pargs_hwrap: 6
+  dangle_parens: true
+  dangle_align: prefix
+
+markup:
+  enable_markup: true
+  first_comment_is_literal: false
+
+lint:
+  disabled_codes: []
+  function_pattern: "[0-9a-z_]+"
+  macro_pattern: "[0-9A-Z_]+"
+  global_var_pattern: "[A-Z][0-9A-Z_]+"
+  internal_var_pattern: "_[a-z][0-9a-z_]+"
+  local_var_pattern: "[a-z][0-9a-z_]+"
+  private_var_pattern: "_[0-9a-z_]+"

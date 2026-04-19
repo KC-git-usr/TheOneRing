@@ -56,6 +56,13 @@ repos:
         files: \.(cpp|cxx|cc)$
         pass_filenames: true
 
+  # ── CMake lint & format (uses .cmake-format.yaml in repo root) ──────────────
+  - repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+      - id: cmake-format
+      - id: cmake-lint
+
   # ── cpplint (Google C++ Style Guide linter) ─────────────────────────────────
   - repo: https://github.com/cpplint/cpplint
     rev: 2.0.0
