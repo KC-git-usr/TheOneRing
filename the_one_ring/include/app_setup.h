@@ -5,16 +5,20 @@
 #include <sys/utsname.h>
 
 #include <charconv>
+#include <csignal>
 #include <mutex>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <utility>
+
+#include "internal_signal.h"
 
 namespace tor::app_setup {
 namespace detail {
 
-/// Parse "major.minor.patch" from a kernel version string.
-/// Returns true on success.
+/// \brief Parse "major.minor.patch" from a kernel version string.
+/// \returns true on success.
 inline auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch) -> bool {
   std::string_view sv(release);
 
@@ -67,9 +71,32 @@ inline auto ParseKernelVersion(const char* release, int* major, int* minor, int*
   return {true, {}};
 }
 
+inline void SignalHandler(sigset_t sigset) {
+  int sig{};
+  // Blocks until SIGINT or SIGTERM is delivered.
+  if (sigwait(&sigset, &sig) == 0) {
+    internal_signal::shutdown_requested.store(true);
+    internal_signal::shutdown_requested.notify_all();
+  }
+}
+
+inline void SetupSignalHandlerImpl() {
+  // Ignore SIGALRM — not used by this application.
+  signal(SIGALRM, SIG_IGN);
+
+  sigset_t sigset;
+  sigemptyset(&sigset);
+  sigaddset(&sigset, SIGINT);
+  sigaddset(&sigset, SIGTERM);
+  // Block in the main thread so all child threads inherit the mask.
+  pthread_sigmask(SIG_BLOCK, &sigset, nullptr);
+  // Spawn a dedicated signal-wait thread (detached — runs until process exits).
+  std::thread(SignalHandler, sigset).detach();
+}
+
 }  // namespace detail
 
-/// Thread-safe, idempotent real-time environment initialization.
+/// \brief Idempotent real-time environment initialization.
 /// Safe to call from any thread; the rt setup is done exactly once.
 /// \returns true on success, else false with an error string message.
 [[nodiscard]] inline auto EnableRTEnv() -> std::pair<bool, std::string> {
@@ -77,6 +104,15 @@ inline auto ParseKernelVersion(const char* release, int* major, int* minor, int*
   static std::once_flag flag;
   std::call_once(flag, []() { result = detail::EnableRTEnvImpl(); });
   return result;
+}
+
+/// \brief  Idempotent application signal handler for graceful shutdown.
+/// Blocks SIGINT/SIGTERM in the calling thread (so child threads inherit the
+/// mask), then spawns a dedicated thread that waits for those signals.
+/// SIGALRM is ignored outright — this app uses clocknanosleep, not POSIX timers.
+inline void SetupSignalHandler() {
+  static std::once_flag flag;
+  std::call_once(flag, detail::SetupSignalHandlerImpl);
 }
 
 }  // namespace tor::app_setup
