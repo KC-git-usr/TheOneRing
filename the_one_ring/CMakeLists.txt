@@ -121,7 +121,7 @@ endif()
 # ── Main executable ───────────────────────────────────────────────────────────
 find_package(spdlog 1.17 REQUIRED CONFIG)
 
-set(SOURCES src/main.cc)
+set(SOURCES src/main.cc src/logger_setup.cc src/app_setup.cc)
 
 if(SOURCES)
   add_executable(${PROJECT_NAME} ${SOURCES})
@@ -132,7 +132,6 @@ if(SOURCES)
 
   target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-  # Real-time: POSIX timers (librt) + pthreads
   target_link_libraries(${PROJECT_NAME} PRIVATE rt pthread)
 
   apply_sanitizers(${PROJECT_NAME})

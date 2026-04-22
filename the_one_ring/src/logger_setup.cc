@@ -1,5 +1,4 @@
-#ifndef THE_ONE_RING_INCLUDE_LOGGER_H_
-#define THE_ONE_RING_INCLUDE_LOGGER_H_
+#include "logger_setup.h"
 
 #include <chrono>
 #include <memory>
@@ -16,7 +15,7 @@
 namespace tor::logger {
 namespace detail {
 
-inline void CreateLoggerImpl() {
+void CreateLoggerImpl() {
   // Setup spdlog
   // Customize log msg format
   spdlog::set_pattern("[%H:%M:%S:%e:%f] [thread %t] [%^%l%$] %v");
@@ -60,13 +59,9 @@ inline void CreateLoggerImpl() {
 
 }  // namespace detail
 
-/// Thread-safe, idempotent logger initialization.
-/// Safe to call from any thread; the logger is created exactly once.
-inline void CreateLogger() {
+void CreateLogger() {
   static std::once_flag flag;
   std::call_once(flag, detail::CreateLoggerImpl);
 }
 
 }  // namespace tor::logger
-
-#endif  // THE_ONE_RING_INCLUDE_LOGGER_H_

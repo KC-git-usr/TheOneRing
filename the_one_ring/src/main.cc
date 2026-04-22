@@ -1,6 +1,7 @@
 #include "app_setup.h"
 #include "internal_signal.h"
-#include "logger.h"
+#include "logger_setup.h"
+#include "spdlog/spdlog.h"
 
 int main() {
   tor::app_setup::SetupSignalHandler();
