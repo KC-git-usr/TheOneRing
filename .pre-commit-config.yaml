@@ -46,16 +46,23 @@ repos:
   # ── clang-tidy (uses .clang-tidy in repo root) ──────────────────────────────
   # Uses the compilation database at tor/build/compile_commands.json.
   # Only runs on .cpp/.cc files (clang-tidy resolves headers through them).
+  #
+  # Slow (~45s per file) — not included in `pre-commit run -a`.
+  # Run explicitly:
+  #   pre-commit run clang-tidy --all-files --hook-stage manual
+  # Or use CMake integration:
+  #   cmake -DENABLE_CLANG_TIDY=ON -S tor -B build && cmake --build build
       - id: clang-tidy
         name: clang-tidy
         language: system
         entry: clang-tidy
         args:
           - -p
-          - tor/build   # Path to directory containing compile_commands.json
+          - tor/build
         types: [c++]
         files: \.(cpp|cxx|cc)$
         pass_filenames: true
+        stages: [manual]
 
   # ── CMake lint & format (uses .cmake-format.yaml in repo root) ──────────────
   - repo: https://github.com/cheshirekow/cmake-format-precommit
