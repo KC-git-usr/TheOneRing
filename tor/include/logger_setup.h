@@ -1,5 +1,5 @@
-#ifndef THE_ONE_RING_INCLUDE_LOGGER_SETUP_H_
-#define THE_ONE_RING_INCLUDE_LOGGER_SETUP_H_
+#ifndef TOR_INCLUDE_LOGGER_SETUP_H_
+#define TOR_INCLUDE_LOGGER_SETUP_H_
 
 namespace tor::logger {
 namespace detail {
@@ -14,4 +14,4 @@ void CreateLogger();
 
 }  // namespace tor::logger
 
-#endif  // THE_ONE_RING_INCLUDE_LOGGER_SETUP_H_
+#endif  // TOR_INCLUDE_LOGGER_SETUP_H_

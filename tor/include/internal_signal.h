@@ -1,5 +1,5 @@
-#ifndef THE_ONE_RING_INCLUDE_INTERNAL_SIGNAL_H_
-#define THE_ONE_RING_INCLUDE_INTERNAL_SIGNAL_H_
+#ifndef TOR_INCLUDE_INTERNAL_SIGNAL_H_
+#define TOR_INCLUDE_INTERNAL_SIGNAL_H_
 
 #include <atomic>
 
@@ -11,4 +11,4 @@ inline std::atomic<bool> shutdown_requested{};
 
 }  // namespace tor::internal_signal
 
-#endif  // THE_ONE_RING_INCLUDE_INTERNAL_SIGNAL_H_
+#endif  // TOR_INCLUDE_INTERNAL_SIGNAL_H_

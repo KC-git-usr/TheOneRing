@@ -1,5 +1,5 @@
-#ifndef THE_ONE_RING_INCLUDE_APP_SETUP_H_
-#define THE_ONE_RING_INCLUDE_APP_SETUP_H_
+#ifndef TOR_INCLUDE_APP_SETUP_H_
+#define TOR_INCLUDE_APP_SETUP_H_
 
 #include <csignal>
 #include <string_view>
@@ -33,4 +33,4 @@ void SetupSignalHandler();
 
 }  // namespace tor::app_setup
 
-#endif  // THE_ONE_RING_INCLUDE_APP_SETUP_H_
+#endif  // TOR_INCLUDE_APP_SETUP_H_

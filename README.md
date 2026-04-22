@@ -44,18 +44,18 @@ stress-ng --matrix 0 -t 1h
 
 **Basic Debug Build:**
 ```bash
-cd the_one_ring
+cd tor
 
 # Modern out-of-source build (cmake creates the build/ directory automatically)
 CC=clang CXX=clang++ cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 cmake --build build -j$(nproc)
-sudo ./build/the_one_ring
+sudo ./build/tor
 
 # Or equivalently, the traditional way:
 # mkdir build && cd build
 # CC=clang CXX=clang++ cmake -DCMAKE_BUILD_TYPE=Debug ..
 # cmake --build . -j$(nproc)
-# sudo ./the_one_ring
+# sudo ./tor
 ```
 
 **With Sanitizers (ASan + UBSan):**
@@ -127,7 +127,7 @@ Colcon discovers the package via `package.xml`. Your workspace should look like:
 code_ws/
   src/
     TheOneRing/
-      the_one_ring/
+      tor/
         CMakeLists.txt
         package.xml
         src/
@@ -137,12 +137,12 @@ code_ws/
 **Basic Build:**
 ```bash
 cd ~/code_ws
-CC=clang CXX=clang++ colcon build --packages-select the_one_ring
+CC=clang CXX=clang++ colcon build --packages-select tor
 ```
 
 **With CMake Args** (sanitizers, tests, etc.):
 ```bash
-CC=clang CXX=clang++ colcon build --packages-select the_one_ring \
+CC=clang CXX=clang++ colcon build --packages-select tor \
   --cmake-args \
     -DCMAKE_BUILD_TYPE=Debug \
     -DENABLE_ASAN=ON \
@@ -153,11 +153,11 @@ CC=clang CXX=clang++ colcon build --packages-select the_one_ring \
 **Run the binary:**
 ```bash
 source install/setup.bash
-sudo ./install/the_one_ring/lib/the_one_ring/the_one_ring
+sudo ./install/tor/lib/tor/tor
 ```
 
 **Run tests (if built with `-DBUILD_TESTING=ON`):**
 ```bash
-colcon test --packages-select the_one_ring
+colcon test --packages-select tor
 colcon test-result --verbose
 ```

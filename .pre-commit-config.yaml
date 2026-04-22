@@ -9,7 +9,7 @@
 #   pip install cpplint
 #
 # NOTE: The clang-tidy hook requires a compilation database (build/compile_commands.json).
-#   Build at least once with:  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S the_one_ring -B build
+#   Build at least once with:  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S tor -B build
 #   before running clang-tidy via pre-commit.
 
 repos:
@@ -44,7 +44,7 @@ repos:
         files: \.(cpp|cxx|cc|c|h|hpp|hxx)$
 
   # ── clang-tidy (uses .clang-tidy in repo root) ──────────────────────────────
-  # Uses the compilation database at the_one_ring/build/compile_commands.json.
+  # Uses the compilation database at tor/build/compile_commands.json.
   # Only runs on .cpp/.cc files (clang-tidy resolves headers through them).
       - id: clang-tidy
         name: clang-tidy
@@ -52,7 +52,7 @@ repos:
         entry: clang-tidy
         args:
           - -p
-          - the_one_ring/build   # Path to directory containing compile_commands.json
+          - tor/build   # Path to directory containing compile_commands.json
         types: [c++]
         files: \.(cpp|cxx|cc)$
         pass_filenames: true

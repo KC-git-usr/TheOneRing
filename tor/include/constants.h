@@ -1,5 +1,5 @@
-#ifndef THE_ONE_RING_INCLUDE_CONSTANTS_H_
-#define THE_ONE_RING_INCLUDE_CONSTANTS_H_
+#ifndef TOR_INCLUDE_CONSTANTS_H_
+#define TOR_INCLUDE_CONSTANTS_H_
 
 namespace tor::constants {
 
@@ -15,4 +15,4 @@ constexpr auto kSpdlogLogFileName{"log/tor_logs"};
 
 }  // namespace tor::constants
 
-#endif  // THE_ONE_RING_INCLUDE_CONSTANTS_H_
+#endif  // TOR_INCLUDE_CONSTANTS_H_

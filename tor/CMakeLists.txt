@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 project(
-  the_one_ring
+  tor
   VERSION 0.1.0
   LANGUAGES CXX
 )
@@ -79,8 +79,8 @@ validate_sanitizer_combinations()
 # ── Code coverage ─────────────────────────────────────────────────────────────
 # Uses llvm-profdata + llvm-cov (LLVM source-based, not gcov).
 # Workflow:  cmake -DENABLE_COVERAGE=ON ..
-#            cmake --build . --target the_one_ring_tests
-#            LLVM_PROFILE_FILE=default.profraw ./the_one_ring_tests
+#            cmake --build . --target tor_tests
+#            LLVM_PROFILE_FILE=default.profraw ./tor_tests
 #            cmake --build . --target coverage-html
 # cmake-format: on
 include(CodeCoverage)
