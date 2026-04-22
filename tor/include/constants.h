@@ -17,6 +17,11 @@ constexpr auto kSpdlogLogFileName{"log/tor_logs"};
 
 /// Application signal handler thread name
 constexpr std::string_view kSignalHandlerThreadName{"SignalHandler"};
+/// Application timer thread name
+constexpr std::string_view kTimerThreadName{"Timer"};
+
+/// Application timer thread priority
+constexpr auto kTimerThreadPriority{99};
 
 }  // namespace tor::constants
 

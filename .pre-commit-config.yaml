@@ -12,6 +12,7 @@
 #   Build at least once with:  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S tor -B build
 #   before running clang-tidy via pre-commit.
 
+exclude: ^tor/log/
 repos:
   # ── General file hygiene ────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -81,7 +82,7 @@ repos:
         args:
           # build/include_subdir: allow headers without matching subdir guard
           # legal/copyright: copyright header not enforced at hook level
-          - --filter=-build/include_subdir,-legal/copyright
+          - --filter=-build/include_subdir,-legal/copyright,-whitespace/indent_namespace
           - --linelength=100
           - --counting=detailed
         types_or: [c++]
