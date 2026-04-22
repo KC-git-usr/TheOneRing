@@ -4,6 +4,7 @@
 #include "spdlog/spdlog.h"
 
 int main() {
+  // signal handler setup must always be done first
   tor::app_setup::SetupSignalHandler();
   tor::logger::CreateLogger();
   if (const auto [result, err_msg] = tor::app_setup::EnableRTEnv(); !result) {

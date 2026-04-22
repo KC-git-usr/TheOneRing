@@ -11,7 +11,10 @@
 #include <thread>
 #include <utility>
 
+#include "constants.h"
 #include "internal_signal.h"
+#include "spdlog/spdlog.h"
+#include "thread_setup.h"
 
 namespace tor::app_setup {
 namespace detail {
@@ -41,7 +44,7 @@ auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch)
   return next_int(major) && expect_dot() && next_int(minor) && expect_dot() && next_int(patch);
 }
 
-[[nodiscard]] auto EnableRTEnvImpl() -> std::pair<bool, std::string_view> {
+[[nodiscard]] auto EnableRTEnvImpl() -> std::pair<bool, std::string> {
   // minimum >= 2.6 kernel | okay >= 5.15 kernel | recommended >= 6.12 kernel
   utsname system_name{};
   if (uname(&system_name) != 0) {
@@ -69,7 +72,13 @@ auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch)
 }
 
 void SignalHandler(sigset_t sigset) {
-  // TODO(KC): set thread name
+  static_assert(constants::kSignalHandlerThreadName.size() <= thread_setup::kMaxPthreadNameLength,
+                "Signal handler thread name exceeds pthread name length limit");
+  if (const auto [result, err_msg] =
+          thread_setup::SetThreadName(constants::kSignalHandlerThreadName);
+      !result) {
+    spdlog::error(err_msg);
+  }
   int sig{};
   // Blocks until SIGINT or SIGTERM is delivered.
   if (sigwait(&sigset, &sig) == 0) {
@@ -94,7 +103,7 @@ void SetupSignalHandlerImpl() {
 
 }  // namespace detail
 
-[[nodiscard]] auto EnableRTEnv() -> std::pair<bool, std::string_view> {
+[[nodiscard]] auto EnableRTEnv() -> std::pair<bool, std::string> {
   static std::pair<bool, std::string> result;
   static std::once_flag flag;
   std::call_once(flag, []() { result = detail::EnableRTEnvImpl(); });

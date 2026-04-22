@@ -1,6 +1,8 @@
 #ifndef TOR_INCLUDE_CONSTANTS_H_
 #define TOR_INCLUDE_CONSTANTS_H_
 
+#include <string_view>
+
 namespace tor::constants {
 
 /// spdlog logger name
@@ -12,6 +14,9 @@ constexpr auto kNumberOfSpdlogThreads{1};
 /// spdlog log file name, with full path, conforming to ros2 file
 /// structure std
 constexpr auto kSpdlogLogFileName{"log/tor_logs"};
+
+/// Application signal handler thread name
+constexpr std::string_view kSignalHandlerThreadName{"SignalHandler"};
 
 }  // namespace tor::constants
 
