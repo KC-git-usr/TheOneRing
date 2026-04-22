@@ -121,9 +121,7 @@ endif()
 # ── Main executable ───────────────────────────────────────────────────────────
 find_package(spdlog 1.17 REQUIRED CONFIG)
 
-set(SOURCES src/main.cc src/app_setup.cc src/logger_setup.cc src/thread_setup.cc
-            include/app_timer.cc
-)
+set(SOURCES src/main.cc src/app_setup.cc src/logger_setup.cc src/thread_setup.cc src/app_timer.cc)
 
 if(SOURCES)
   add_executable(${PROJECT_NAME} ${SOURCES})
