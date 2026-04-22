@@ -12,7 +12,6 @@
 #   Build at least once with:  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -S tor -B build
 #   before running clang-tidy via pre-commit.
 
-exclude: ^tor/log/
 repos:
   # ── General file hygiene ────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
