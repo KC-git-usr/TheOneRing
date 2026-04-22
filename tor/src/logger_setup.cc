@@ -13,6 +13,7 @@
 #include "spdlog/spdlog.h"
 
 namespace tor::logger {
+
 namespace detail {
 
 void CreateLoggerImpl() {

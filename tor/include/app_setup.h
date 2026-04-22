@@ -5,6 +5,7 @@
 #include <utility>
 
 namespace tor::app_setup {
+
 namespace detail {
 
 /// \brief Parse "major.minor.patch" from a kernel version string.

@@ -17,6 +17,7 @@
 #include "thread_setup.h"
 
 namespace tor::app_setup {
+
 namespace detail {
 
 auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch) -> bool {

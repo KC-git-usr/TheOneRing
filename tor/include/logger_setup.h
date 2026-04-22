@@ -2,6 +2,7 @@
 #define TOR_INCLUDE_LOGGER_SETUP_H_
 
 namespace tor::logger {
+
 namespace detail {
 
 void CreateLoggerImpl();
