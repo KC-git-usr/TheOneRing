@@ -12,7 +12,7 @@ int main() {
     return -1;
   }
 
-  tor::internal_signal::shutdown_requested.wait(false);
+  tor::internal_signal::WaitForShutdown();
   spdlog::info("Shutdown command received");
   spdlog::info("Application exited");
   return 0;

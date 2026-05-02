@@ -26,11 +26,18 @@ class PeriodicTimer {
 
   ~PeriodicTimer() { Stop(); }
 
+  PeriodicTimer(const PeriodicTimer&) = delete;
+  PeriodicTimer& operator=(const PeriodicTimer&) = delete;
+  PeriodicTimer(PeriodicTimer&&) = delete;
+  PeriodicTimer& operator=(PeriodicTimer&&) = delete;
+
   auto Start() -> void { start_timer_.release(); }
 
   auto Stop() -> void {
-    // Ensure the timer thread wakes up to exit
-    start_timer_.release();
+    // Guard against double-release: only release the semaphore on the first Stop().
+    if (!stopped_.test_and_set()) {
+      start_timer_.release();
+    }
     timer_thread_.request_stop();
   }
 
@@ -102,6 +109,8 @@ class PeriodicTimer {
   std::uint64_t tick_count_{};
 
   std::jthread timer_thread_;
+  /// Guard to prevent double-release of start_timer_ if Stop() is called after Start()
+  std::atomic_flag stopped_{};
   /// Signal from timer thread to constructor about initialization status
   std::binary_semaphore timer_thread_initialization_{0};
   std::atomic<bool> timer_thread_initialize_result_{false};

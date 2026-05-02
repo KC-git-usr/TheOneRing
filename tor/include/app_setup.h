@@ -6,20 +6,6 @@
 
 namespace tor::app_setup {
 
-namespace detail {
-
-/// \brief Parse "major.minor.patch" from a kernel version string.
-/// \returns true on success.
-auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch) -> bool;
-
-[[nodiscard]] auto EnableRTEnvImpl() -> std::pair<bool, std::string>;
-
-void SignalHandler(sigset_t sigset);
-
-void SetupSignalHandlerImpl();
-
-}  // namespace detail
-
 /// \brief Idempotent real-time environment initialization.
 /// Safe to call from any thread; the rt setup is done exactly once.
 /// \returns true on success, else false with an error string message.

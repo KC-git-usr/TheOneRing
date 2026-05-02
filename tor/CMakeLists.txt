@@ -123,25 +123,21 @@ find_package(spdlog 1.17 REQUIRED CONFIG)
 
 set(SOURCES src/main.cc src/app_setup.cc src/logger_setup.cc src/thread_setup.cc src/app_timer.cc)
 
-if(SOURCES)
-  add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES})
 
-  target_include_directories(
-    ${PROJECT_NAME} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  )
+target_include_directories(
+  ${PROJECT_NAME} PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 
-  target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
-  target_link_libraries(${PROJECT_NAME} PRIVATE rt pthread)
+target_link_libraries(${PROJECT_NAME} PRIVATE spdlog::spdlog rt pthread)
 
-  apply_sanitizers(${PROJECT_NAME})
-  # Coverage is applied to the test binary in tests/CMakeLists.txt. The main RT executable runs
-  # indefinitely and is not amenable to profiling.
+apply_sanitizers(${PROJECT_NAME})
+# Coverage is applied to the test binary in tests/CMakeLists.txt. The main RT executable runs
+# indefinitely and is not amenable to profiling.
 
-  install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
-else()
-  message(STATUS "No .cpp files found in src/ — skipping executable target.")
-endif()
+install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 
 # ── Unit tests ────────────────────────────────────────────────────────────────
 if(BUILD_TESTING)

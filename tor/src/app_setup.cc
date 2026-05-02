@@ -59,7 +59,7 @@ auto ParseKernelVersion(const char* release, int* major, int* minor, int* patch)
     return {false, "Failed to parse kernel version from: " + std::string(system_name.release)};
   }
 
-  if ((major != 2 || minor < 6) && major < 3) {
+  if (major < 2 || (major == 2 && minor < 6)) {
     return {false, "Detected kernel = " + std::to_string(major) + "." + std::to_string(minor) +
                        "." + std::to_string(patch) + ", required Linux kernel >= 2.6"};
   }
@@ -83,8 +83,8 @@ void SignalHandler(sigset_t sigset) {
   int sig{};
   // Blocks until SIGINT or SIGTERM is delivered.
   if (sigwait(&sigset, &sig) == 0) {
-    internal_signal::shutdown_requested.store(true);
-    internal_signal::shutdown_requested.notify_all();
+    internal_signal::detail::shutdown_requested_flag.store(true, std::memory_order_release);
+    internal_signal::detail::shutdown_requested_flag.notify_all();
   }
 }
 
